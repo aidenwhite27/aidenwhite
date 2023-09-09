@@ -32,5 +32,18 @@ class Post(db.Model):
     last_edited = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+    def __init__(self, title, thumbnail, body, user_id):
+        self.title = title
+        self.thumbnail = thumbnail
+        self.body = body
+        self.user_id = user_id
+
     def __repr__(self):
         return '<Post {}>'.format(self.title)
+
+    def get_author(self):
+        return User.query.get(int(self.user_id)).username
+
+    def load_post(id):
+        return Post.query.get(int(id))
+
