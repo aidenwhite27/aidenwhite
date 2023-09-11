@@ -30,16 +30,18 @@ class Post(db.Model):
     body = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     last_edited = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    is_draft = db.Column(db.Boolean, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, title, thumbnail, body, user_id):
+    def __init__(self, title, thumbnail, body, user_id, is_draft):
         self.title = title
         self.thumbnail = thumbnail
         self.body = body
         self.user_id = user_id
+        self.is_draft = is_draft
 
     def __repr__(self):
-        return '<Post {}>'.format(self.title)
+        return '<Post {} Draft {}>'.format(self.title, self.is_draft)
 
     def get_author(self):
         return User.query.get(int(self.user_id)).username

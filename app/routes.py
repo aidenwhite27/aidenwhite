@@ -1,25 +1,30 @@
 from app import app, db
-from app.forms import LoginForm, CreatePostForm
+from app.forms import LoginForm, CreatePostForm, DeletePostForm
 from flask import render_template, url_for, flash, redirect
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Post
 from flask import request
 from werkzeug.urls import url_parse
 from datetime import datetime
+from sqlalchemy import desc 
 
 @app.route('/')
 @app.route('/index')
 @app.route('/blog')
 def blog():
-    posts = Post.query.limit(10).all()
+    if current_user.is_authenticated:
+        posts = Post.query.order_by(desc(Post.timestamp)).limit(10).all()
+    else:
+        posts = Post.query.filter(Post.is_draft.is_(False)).order_by(desc(Post.timestamp)).limit(10).all()
     return render_template('blog.html', posts=posts, admin=current_user.is_authenticated)
 
 @app.route('/post', methods=['GET', 'POST'])
 @login_required
 def post():
+    form = CreatePostForm()
+    
     id = request.args.get("id", type=int)
     if id: post = Post.load_post(id)
-    form = CreatePostForm()
     if request.method == 'GET' and id:
         form.title.data = post.title
         form.body.data = post.body
@@ -33,12 +38,31 @@ def post():
             post.title = title
             post.body = body
             post.last_edited = datetime.utcnow()
+            post.is_draft = form.draft.data
         else:
-            record = Post(title=title, thumbnail=thumbnail, body=body, user_id=user_id)
+            flash(form.draft.data)
+            record = Post(title=title, thumbnail=thumbnail, body=body, user_id=user_id, is_draft=form.draft.data)
             db.session.add(record)
         db.session.commit()
         return redirect(url_for('blog'))
     return render_template('create_post.html', form=form)
+
+@app.route('/delete_post', methods=['GET', 'POST'])
+@login_required
+def delete_post():
+    id = request.args.get("id", type=int)
+    if id: 
+        post = Post.load_post(id)
+    else:
+        return "No post ID given", 404
+    form = DeletePostForm()
+    if form.validate_on_submit():
+        check = form.check.data
+        if check:
+            Post.query.filter_by(id=id).delete()
+            db.session.commit()
+        return redirect(url_for('blog'))
+    return render_template('delete_post.html', form=form)
 
 @app.route('/about')
 def about():
