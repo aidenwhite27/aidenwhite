@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+   
+{% block head %}
+    {{ super() }}
+    <title>Sorting</title>
+{% endblock %}
+
+{% block app_content %}
+  <div class="container">
+        <script src="https://d3js.org/d3.v4.js"></script>
+	<script src="{{ url_for('static', filename='projects/sorting/controllers.js') }}"></script>
+	<script src="{{ url_for('static', filename='projects/sorting/algos.js') }}"></script>
+	
+        <input type="range" name="speed" id="speed" min="0" max="1000" value="500">Speed</input>
+        
+        <input type="range" name="values" id="values" min="10" max="1000" value="100">Values</input>
+        <br>
+        <select name="algos" id="algos">
+        <option value="selection">Selection Sort</option>
+        <option value="bubble">Bubble Sort</option>
+        <option value="insertion">Insertion Sort</option>
+        <option value="merge">Merge Sort</option>
+        </select>
+        
+        <button type="button" id="reset-button">Reset</button>
+        
+        <div id="barchart"></div>
+        
+        <script>init()</script>
+  </div>
+{% endblock %}

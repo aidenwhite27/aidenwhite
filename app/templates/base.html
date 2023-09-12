@@ -1,5 +1,24 @@
 {% extends 'bootstrap/base.html' %}
 
+{% block head %}
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-B2EBWQR3SF"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    
+    gtag('config', 'G-B2EBWQR3SF');
+    </script>
+
+    {{ super() }}
+{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+{% endblock %}
+
 {% block scripts %}
     {{ super() }}
     {{ moment.include_moment() }}
@@ -20,11 +39,15 @@
             <div class="collapse navbar-collapse" id="navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url_for('blog') }}">Blog</a></li>
+                    <li><a href="{{ url_for('projects') }}">Projects</a></li>
                     <li><a href="{{ url_for('about') }}">About</a></li>
                 </ul>
             </div>
         </div>
     </nav>
+{% endblock %}
+
+{% block content %}
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     <ul>
@@ -34,5 +57,11 @@
     </ul>
     {% endif %}
     {% endwith %}
+    {% block app_content %}{% endblock %}
+
+    <div style="position:fixed; width: 100%; bottom:0; text-align:center">
+      <hr>
+      <p> &copy 2023 by Aiden White. All rights reserved.</p>
+    </div>
 {% endblock %}
 

@@ -89,3 +89,15 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('blog'))
+
+@app.route('/projects')
+def projects():
+    return render_template('projects.html')
+
+@app.route('/projects/sorting')
+def sorting():
+    return render_template('sorting.html')
+
+@app.errorhandler(404)
+def not_found(e):
+    return render_template('404.html'), 404

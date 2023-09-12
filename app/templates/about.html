@@ -1,17 +1,23 @@
 {% extends "base.html" %}
 
-{% block content %}
-    <div class="container">
+{% block app_content %}
+    <div class="container post">
 	<div class="mx-auto">
-	    <h1>About</h1>
+	    <h1>About Me</h1>
 	    <br>
 	    <div>
 	        <a class="btn btn-primary" href="https://www.linkedin.com/in/aiden-white-280793181/" target="_blank">LinkedIn</a>
-   	    </div>
+		<a class="btn btn-info" href="https://github.com/aidenwhite27" target="_blank">Github</a>
+	    </div>
 	    <br>
 	    <h4>Hi, I'm Aiden. I'm a Software Engineer/Data Scientist working on tools for solid-state drive validation at <a href="https://www.solidigm.com" target="_blank">Solidigm</a>.</h4>
 	    <br>
 	    <h4>I'm located in Southern California and my interests include programming, running, and playing chess.</h4>
 	</div>
+    </div>
+    <div class="container post">
+	<h1>About This Site</h1>
+	<br>
+	<p>This site was based on Miguel Grinberg's <a href="https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world" target="_blank">Flask Mega-Tutorial</a>. It uses bootstrap in the frontend, flask in the backend, and it's hosted on a DigitalOcean VPS. You can view (most of) the source code <a href="https://github.com/aidenwhite27/aidenwhite" target="_blank">on github</a></p>
     </div>
 {% endblock %}
