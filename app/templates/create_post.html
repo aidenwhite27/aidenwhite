@@ -11,10 +11,14 @@
     {{ form.hidden_tag() }}
     <p>
       {{ form.title.label }}<br>
-      {{ form.title(size=32) }}<br>
+      {{ form.title(size=50) }}<br>
       {% for error in form.title.errors %}
       <span style="color: red;">[{{ error }}]</span>
       {% endfor %}
+    </p>
+    <p>
+      {{ form.meta_desc.label }}<br>
+      {{ form.meta_desc(size=50) }}
     </p>
     <p>
       {{ form.body.label }}<br>
