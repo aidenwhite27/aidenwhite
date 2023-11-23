@@ -26,6 +26,7 @@ class User(UserMixin, db.Model):
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
+    meta = db.Column(db.String(200))
     thumbnail = db.Column(db.String(100))
     body = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
@@ -33,8 +34,9 @@ class Post(db.Model):
     is_draft = db.Column(db.Boolean, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, title, thumbnail, body, user_id, is_draft):
+    def __init__(self, title, meta, thumbnail, body, user_id, is_draft):
         self.title = title
+        self.meta = meta
         self.thumbnail = thumbnail
         self.body = body
         self.user_id = user_id
@@ -49,3 +51,5 @@ class Post(db.Model):
     def load_post(id):
         return Post.query.get(int(id))
 
+    def get_url_name(self):
+        return self.title.replace(' ', '-')

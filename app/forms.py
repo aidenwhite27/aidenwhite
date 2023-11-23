@@ -10,6 +10,7 @@ class LoginForm(FlaskForm):
 
 class CreatePostForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
+    meta_desc = StringField('Meta')
     body = TextAreaField('Body', validators=[DataRequired()])
     submit = SubmitField('Submit')
     draft = SubmitField('Save Draft')

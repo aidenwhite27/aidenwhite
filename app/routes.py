@@ -6,7 +6,7 @@ from app.models import User, Post
 from flask import request
 from werkzeug.urls import url_parse
 from datetime import datetime
-from sqlalchemy import desc 
+from sqlalchemy import desc, and_
 
 @app.route('/')
 @app.route('/index')
@@ -18,6 +18,17 @@ def blog():
         posts = Post.query.filter(Post.is_draft.is_(False)).order_by(desc(Post.timestamp)).limit(10).all()
     return render_template('blog.html', posts=posts, admin=current_user.is_authenticated)
 
+@app.route('/blog/<post_name>')
+def single_post_page(post_name):
+    post_name = post_name.replace('-', ' ')
+    if current_user.is_authenticated:
+        post = Post.query.filter(Post.title == post_name).one_or_none()
+    else:
+        post = Post.query.filter(and_(Post.is_draft.is_(False), Post.title == post_name)).one_or_none()
+    if not post:
+        return redirect(url_for('not_found'))
+    return render_template('post.html', meta=post.meta, post=post, admin=current_user.is_authenticated)
+
 @app.route('/post', methods=['GET', 'POST'])
 @login_required
 def post():
@@ -27,21 +38,24 @@ def post():
     if id: post = Post.load_post(id)
     if request.method == 'GET' and id:
         form.title.data = post.title
+        form.meta_desc.data = post.meta
         form.body.data = post.body
     if form.validate_on_submit():
         title = request.form['title']
+        meta = request.form['meta_desc']
         body = request.form['body']
         thumbnail = ''
         user_id = current_user.id
         
         if id:
             post.title = title
+            post.meta = meta
             post.body = body
             post.last_edited = datetime.utcnow()
             post.is_draft = form.draft.data
         else:
             flash(form.draft.data)
-            record = Post(title=title, thumbnail=thumbnail, body=body, user_id=user_id, is_draft=form.draft.data)
+            record = Post(title=title, meta=meta, thumbnail=thumbnail, body=body, user_id=user_id, is_draft=form.draft.data)
             db.session.add(record)
         db.session.commit()
         return redirect(url_for('blog'))

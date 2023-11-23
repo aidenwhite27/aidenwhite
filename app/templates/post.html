@@ -1,13 +1,19 @@
 {% extends "base.html" %}
 
 {% block title %}
-  Blog
+  {{ post.title }}
+{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  {% if post.meta %}
+    <meta name="description" content="{{ post.meta }}">
+  {% endif %}
 {% endblock %}
 
 {% block app_content %}
-  {% for post in posts %}
   <div class="container post">
-    <h1><a class="post-title" href="{{ url_for('single_post_page', post_name=post.get_url_name()) }}">{{ post.title }}</a></h1>
+    <h1>{{ post.title }}</h1>
     <h6> By: {{ post.get_author() }} </h6>
     <h6> Posted: {{ moment(post.timestamp).format('LLL') }} </h6>
     <h6> Last Edited: {{ moment(post.last_edited).format('LLL') }} </h6>
@@ -21,5 +27,4 @@
     <div> {{ post.body | safe}} </div>
     <br>
   </div>
-  {% endfor %}
 {% endblock %}
