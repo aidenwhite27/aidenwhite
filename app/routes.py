@@ -1,12 +1,15 @@
 from app import app, db
 from app.forms import LoginForm, CreatePostForm, DeletePostForm
-from flask import render_template, url_for, flash, redirect
+from flask import request, render_template, url_for, flash, redirect, send_from_directory
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Post
-from flask import request
 from werkzeug.urls import url_parse
 from datetime import datetime
 from sqlalchemy import desc, and_
+
+@app.route('/sitemap.xml')
+def sitemap():
+    return send_from_directory(app.static_folder, request.path[1:])
 
 @app.route('/')
 @app.route('/index')
